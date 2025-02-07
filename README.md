@@ -1,209 +1,252 @@
-# Knowledge Graph Visualization System
+# Interactive Data Visualization Components
 
-An advanced, interactive visualization system for exploring and analyzing knowledge graphs with real-time statistics, comparison features, and multiple visualization types.
+A collection of React components for interactive data visualization with statistical analysis capabilities.
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![React Version](https://img.shields.io/badge/react-%3E%3D18.0.0-61dafb.svg)
-![TypeScript](https://img.shields.io/badge/typescript-%5E4.9.0-blue.svg)
+## Features
 
-## 🚀 Features
+### Chart Components
+- **Interactive Area Chart**
+  - Real-time hover effects
+  - Point pinning for comparison
+  - Interactive tooltips
+  - Grid lines and visual guides
+  - Smooth transitions
 
-### Interactive Visualizations
-- **Multiple Chart Types**
-  - Interactive Area Charts with confidence trends
-  - Candlestick visualization for volatility analysis
-  - Sparkline for compact trend display
-  - Bar charts for frequency analysis
+- **Candlestick Chart**
+  - OHLC (Open, High, Low, Close) visualization
+  - Color-coded up/down movements
+  - Hover tooltips with detailed data
+  - Customizable colors and dimensions
 
-### Advanced Analysis Tools
-- **Statistical Analysis**
-  - Comprehensive statistical measures (mean, median, mode, variance)
-  - Quartile analysis and IQR calculations
-  - Outlier detection
-  - Significant change detection using z-scores
+### Analysis Tools
+- **Statistical Calculator**
+  - Basic statistics (mean, median, mode)
+  - Advanced measures (variance, standard deviation)
+  - Quartile calculations
+  - Outlier detection (IQR method)
+  - Significant change detection
 
 - **Comparison Features**
-  - Pin multiple points for detailed comparison
-  - Delta analysis between pinned points
+  - Pin points for detailed analysis
+  - Delta calculations between points
   - Percentile rankings
-  - Dataset-wide statistics
+  - Time span analysis
+  - Statistical context
 
-### Data Filtering
-- **Flexible Filter Options**
-  - Value range filtering
-  - Date range selection with presets
-  - Statistical filtering (outliers, significant changes)
-  - Real-time updates with performance optimization
+### Interactive Filtering
+- Value range filtering
+- Date range selection
+- Statistical filtering options
+- Outlier handling
+- Real-time updates
 
-### User Experience
-- **Intuitive Controls**
-  - Smooth transitions between views
-  - Interactive tooltips with detailed information
-  - Keyboard navigation support
-  - Accessible design with ARIA labels
+## Installation
 
-## 🛠️ Installation
-
+1. **Clone the Repository**
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/knowledge-graph-viz.git
-
-# Navigate to the project directory
-cd knowledge-graph-viz
-
-# Install dependencies
-npm install
-
-# Start the development server
-npm run dev
+git clone https://github.com/yourusername/interactive-data-visualization.git
+cd interactive-data-visualization
 ```
 
-## 💻 Usage
+2. **Install Dependencies**
+```bash
+npm install react react-dom lodash tailwindcss
+```
 
-### Basic Implementation
+3. **Configure TailwindCSS**
+Create `tailwind.config.js`:
+```javascript
+module.exports = {
+  content: ["./src/**/*.{js,jsx}"],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
 
+4. **Add TailwindCSS to Your CSS**
+In your main CSS file:
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+## Component Usage
+
+### Area Chart
 ```jsx
-import { KnowledgeGraph } from 'knowledge-graph-viz';
+import { InteractiveAreaChart } from './components/charts';
 
-function App() {
+function TimeseriesView() {
+  const data = [
+    { timestamp: '2024-01-01', value: 0.75 },
+    { timestamp: '2024-01-02', value: 0.82 },
+    // ... more data points
+  ];
+
   return (
-    <KnowledgeGraph
+    <InteractiveAreaChart
+      data={data}
+      width={800}
+      height={400}
+      color="#4CAF50"
+    />
+  );
+}
+```
+
+### Candlestick Chart
+```jsx
+import { CandlestickChart } from './components/charts';
+
+function PriceView() {
+  const data = [
+    {
+      timestamp: '2024-01-01',
+      open: 100,
+      high: 105,
+      low: 98,
+      close: 103
+    },
+    // ... more price data
+  ];
+
+  return (
+    <CandlestickChart
+      data={data}
+      width={800}
+      height={400}
+      upColor="#4CAF50"
+      downColor="#FF5252"
+    />
+  );
+}
+```
+
+### Filter Controls
+```jsx
+import { FilterControls } from './components/filters';
+
+function DataFilters() {
+  const handleFilterChange = (filters) => {
+    console.log('New filters:', filters);
+    // Apply filters to your data
+  };
+
+  return (
+    <FilterControls
       data={yourData}
-      options={{
-        layout: 'force',
-        theme: 'light',
-        enableComparison: true
+      onFilterChange={handleFilterChange}
+      activeFilters={{
+        minValue: 0,
+        maxValue: 100,
+        showOutliers: true,
+        onlySignificant: false
       }}
     />
   );
 }
 ```
 
-### Advanced Configuration
-
+### Comparison View
 ```jsx
-import { KnowledgeGraph, ComparisonView, FilterControls } from 'knowledge-graph-viz';
+import { ComparisonView } from './components/comparison';
 
-function AdvancedImplementation() {
+function DataComparison() {
+  const pinnedPoints = [
+    { timestamp: '2024-01-01', value: 0.75 },
+    { timestamp: '2024-01-10', value: 0.85 }
+  ];
+
+  return (
+    <ComparisonView
+      pinnedPoints={pinnedPoints}
+      allData={completeDataset}
+      onClose={() => console.log('Closing comparison view')}
+    />
+  );
+}
+```
+
+### Complete Example
+```jsx
+import React, { useState } from 'react';
+import { InteractiveAreaChart } from './components/charts';
+import { FilterControls } from './components/filters';
+import { ComparisonView } from './components/comparison';
+import { StatsCalculator } from './utils';
+
+function App() {
+  const [filteredData, setFilteredData] = useState(yourData);
+  const [pinnedPoints, setPinnedPoints] = useState([]);
+
   const handleFilterChange = (filters) => {
-    // Handle filter updates
+    const newData = yourData.filter(/* Apply filters */);
+    setFilteredData(newData);
   };
 
   return (
-    <div>
-      <FilterControls
-        data={data}
+    <div className="p-4">
+      <FilterControls 
+        data={yourData}
         onFilterChange={handleFilterChange}
-        activeFilters={currentFilters}
       />
-      <KnowledgeGraph
+      <InteractiveAreaChart 
         data={filteredData}
-        options={{
-          layout: 'hierarchical',
-          enablePinning: true,
-          showStatistics: true,
-          animations: {
-            duration: 500,
-            easing: 'easeInOutCubic'
-          }
-        }}
+        width={800}
+        height={400}
       />
-      <ComparisonView
-        pinnedPoints={selectedPoints}
-        allData={data}
-      />
+      {pinnedPoints.length > 0 && (
+        <ComparisonView 
+          pinnedPoints={pinnedPoints}
+          allData={yourData}
+          onClose={() => setPinnedPoints([])}
+        />
+      )}
     </div>
   );
 }
 ```
 
-## 📊 Visualization Types
+## Props Reference
 
-### Area Chart
-```jsx
-<InteractiveAreaChart
-  data={timeSeriesData}
-  width={800}
-  height={400}
-  color="#4CAF50"
-/>
-```
+### InteractiveAreaChart
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| data | array | required | Array of {timestamp, value} objects |
+| width | number | 200 | Chart width in pixels |
+| height | number | 40 | Chart height in pixels |
+| color | string | "#4CAF50" | Primary chart color |
 
-### Candlestick Chart
-```jsx
-<CandlestickChart
-  data={volatilityData}
-  width={800}
-  height={400}
-  upColor="#4CAF50"
-  downColor="#FF5252"
-/>
-```
+### CandlestickChart
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| data | array | required | Array of OHLC objects |
+| width | number | 200 | Chart width in pixels |
+| height | number | 40 | Chart height in pixels |
+| upColor | string | "#4CAF50" | Color for upward movements |
+| downColor | string | "#FF5252" | Color for downward movements |
 
-## 🔧 Configuration Options
+### FilterControls
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| data | array | required | Dataset to analyze |
+| onFilterChange | function | required | Callback for filter updates |
+| activeFilters | object | {} | Current filter state |
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| layout | string | 'force' | Graph layout algorithm ('force', 'hierarchical', 'multilevel') |
-| theme | string | 'light' | Visual theme ('light', 'dark', 'system') |
-| enablePinning | boolean | true | Enable point pinning for comparison |
-| showStatistics | boolean | true | Show statistical analysis panel |
-| animations | object | {...} | Animation configuration options |
+### ComparisonView
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| pinnedPoints | array | required | Points to compare |
+| allData | array | required | Complete dataset |
+| onClose | function | required | Close callback |
 
-## 📈 Statistical Features
+## Contributing
 
-- **Basic Statistics**
-  - Mean, Median, Mode
-  - Standard Deviation
-  - Variance
-  - Quartiles (Q1, Q2, Q3)
+Contributions are welcome! Please read our contributing guidelines before submitting pull requests.
 
-- **Advanced Analysis**
-  - Outlier Detection (IQR method)
-  - Significant Change Detection (z-score based)
-  - Trend Analysis
-  - Correlation Detection
+## License
 
-## 🎨 Styling
-
-The system uses Tailwind CSS for styling and provides comprehensive theme customization:
-
-```jsx
-<KnowledgeGraph
-  theme={{
-    colors: {
-      primary: '#4CAF50',
-      secondary: '#2196F3',
-      accent: '#FF4081'
-    },
-    fonts: {
-      sans: 'Inter, sans-serif',
-      mono: 'Fira Code, monospace'
-    }
-  }}
-/>
-```
-
-## 🤝 Contributing
-
-Contributions are welcome! 
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License 
-
-## 🙏 Acknowledgments
-
-- React team for the amazing framework
-- D3.js community for visualization inspiration
-- Contributors and maintainers of all dependencies
-
----
-
-Built with ❤️ by natefrog
+This project is licensed under the MIT License - see the LICENSE file for details.
